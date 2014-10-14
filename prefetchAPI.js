@@ -9,16 +9,21 @@
     self.xhr = new XHR();
 
     self.getAllResponseHeaders = self.xhr.getAllResponseHeaders.bind(self.xhr);
-    self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr)
+    self.getResponseHeader = self.xhr.getResponseHeader.bind(self.xhr);
+    self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr);
 
-    ['onload', 'onerror', 'onprogress', 'onabort'].forEach(function (event) {
-      Object.defineProperty(self, event, {
-        set: function (func) {
-          self.xhr[event] = func;
-          self[event + 'Func'] = func; /* Using a different prop to avoid infinite loop */
+    /* Add getter+setter passthroughs */
+    [
+      'onload', 'onerror', 'onprogress', 'onabort', 'ontimeout',
+      'onreadystatechange', 'upload', 'withCredentials',
+      'timeout', 'readyState'
+    ].forEach(function (prop) {
+      Object.defineProperty(self, prop, {
+        set: function (val) {
+          self.xhr[prop] = val;
         },
         get: function () {
-          return self.xhr[event];
+          return self.xhr[prop];
         }
       });
     });
@@ -37,17 +42,13 @@
       async !== false &&
       typeof window[this.apiPrefetchOptions.variable] !== 'undefined';
 
-    /* If we're not prefetching, open the xhr request like normal */
-    if (!self.apiPrefetchExecuting) {
-      return self.originalSelf.open.apply(self.xhr, arguments);
-    }
+    return self.xhr.open.apply(self.xhr, arguments);
   };
 
   phonyXHR.prototype.send = function () {
     var self = this;
 
     if (!self.apiPrefetchExecuting) {
-      self.xhr.onload = self.onload;
       return self.xhr.send.apply(self.xhr, arguments);
     }
 
