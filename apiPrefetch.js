@@ -8,9 +8,9 @@
 
     self.xhr = new XHR();
 
-    self.getAllResponseHeaders = self.xhr.getAllResponseHeaders.bind(self.xhr);
-    self.getResponseHeader = self.xhr.getResponseHeader.bind(self.xhr);
-    self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr);
+    self.getAllResponseHeaders = function () {};
+    self.getResponseHeader = function () {};
+    self.setRequestHeader = function () {};
 
     /* Add getter+setter passthroughs */
     [
@@ -42,7 +42,12 @@
       async !== false &&
       typeof window[this.apiPrefetchOptions.variable] !== 'undefined';
 
-    return self.xhr.open.apply(self.xhr, arguments);
+    if (!self.apiPrefetchExecuting) {
+      self.getAllResponseHeaders = self.xhr.getAllResponseHeaders.bind(self.xhr);
+      self.getResponseHeader = self.xhr.getResponseHeader.bind(self.xhr);
+      self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr);
+      self.xhr.open.apply(self.xhr, arguments);
+    }
   };
 
   phonyXHR.prototype.send = function () {
@@ -83,6 +88,8 @@
         xhr.response = xhr.responseText;
       }
     }
+
+    delete window[xhr.apiPrefetchOptions.variable];
   }
 
 })(XMLHttpRequest);
