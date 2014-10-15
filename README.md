@@ -6,6 +6,8 @@ It overrides the browser's default XMLHttpRequest constructor, so it should work
 
 This library works really well with the NodeJS back-end framework [Synth](https://www.synthjs.com/).
 
+[![Build Status](https://travis-ci.org/JonAbrams/apiPrefetch.js.svg?branch=master)](https://travis-ci.org/JonAbrams/apiPrefetch.js)
+
 ## Usage
 
 Load apiPrefetch.js before you load any other JS code, especially any that would access XMLHttpRequest.
