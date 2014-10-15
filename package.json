@@ -1,10 +1,9 @@
 {
-  "name": "prefetchAPI.js",
+  "name": "apiPrefetch.js",
   "version": "0.5.0",
   "main": "prefetchAPI.js",
   "devDependencies": {
     "mocha": "^1.21.5",
-    "mocha-browser": "^0.2.0",
     "mocha-phantomjs": "^3.5.1",
     "phantomjs": "^1.9.10",
     "should": "^4.0.4"

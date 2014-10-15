@@ -8,7 +8,7 @@ This library works really well with the NodeJS back-end framework [Synth](https:
 
 ## Usage
 
-Load prefetchAPI.js before you load any other JS code, especially any that would access XMLHttpRequest.
+Load apiPrefetch.js before you load any other JS code, especially any that would access XMLHttpRequest.
 
 Configure your server to preload the results of an initial API get request into a global variable called **apiPrefetchData**.
 
@@ -18,7 +18,7 @@ After the initial API request, all future requests will actually go out and hit 
 
 ## Example
 
-This is a raw example, but *hopefully*/*eventually* libraries like jQuery and AngularJS will *just work*. (This has yet to be tested, and they likely won't *just* work)
+This is a raw example, but *hopefully* libraries like jQuery and AngularJS will *just work*. (This has yet to be tested, and they likely won't *just* work)
 
 ```html
 <html>
@@ -32,7 +32,7 @@ This is a raw example, but *hopefully*/*eventually* libraries like jQuery and An
   </head>
   <body>
     <div id="title"></div>
-    <script src="prefetchAPI.js"></script>
+    <script src="apiPrefetch.js"></script>
     <script>
       var xhr = new XMLHttpRequest();
       xhr.open('get', '/api/posts');
