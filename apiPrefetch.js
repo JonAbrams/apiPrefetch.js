@@ -38,15 +38,24 @@
 
   phonyXHR.prototype.open = function (method, url, async) {
     var self = this;
+    var prefetchVar = window[this.apiPrefetchOptions.variable];
+
     self.apiPrefetchExecuting = method.toUpperCase() === 'GET' &&
       async !== false &&
-      typeof window[this.apiPrefetchOptions.variable] !== 'undefined';
+      prefetchVar &&
+      (typeof prefetchVar === 'string' || prefetchVar[url]);
 
     if (!self.apiPrefetchExecuting) {
       self.getAllResponseHeaders = self.xhr.getAllResponseHeaders.bind(self.xhr);
       self.getResponseHeader = self.xhr.getResponseHeader.bind(self.xhr);
       self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr);
       self.xhr.open.apply(self.xhr, arguments);
+    } else if (typeof prefetchVar === 'string') {
+      assignResponse(self, prefetchVar);
+      delete window[this.apiPrefetchOptions.variable];
+    } else {
+      assignResponse(self, prefetchVar[url]);
+      delete prefetchVar[url];
     }
   };
 
@@ -62,34 +71,22 @@
 
     /* Don't call onload right away, it might be set after send is called */
     setTimeout(function () {
-      assignResponse(self);
-      if (typeof self.onload == 'function') self.onload();
+      if (self.responseType === 'json') {
+        self.response = JSON.parse(self.responseText);
+      }
+      if (typeof self.onload === 'function') self.onload();
     }, 0);
   };
 
-  function assignResponse(xhr) {
-    var apiPrefetchData = window[xhr.apiPrefetchOptions.variable];
-
+  function assignResponse(xhr, value) {
     xhr.status = 200;
     xhr.statusText = '200 OK';
 
-    if (typeof apiPrefetchData === 'string') {
-      xhr.responseText = apiPrefetchData;
-      if (xhr.responseType === 'json') {
-        xhr.response = JSON.parse(apiPrefetchData);
-      } else {
-        xhr.response = xhr.responseText;
-      }
+    if (typeof value === 'string') {
+      xhr.response = xhr.responseText = value;
     } else {
-      xhr.responseText = JSON.stringify(apiPrefetchData);
-      if (xhr.responseType === 'json') {
-        xhr.response = apiPrefetchData;
-      } else {
-        xhr.response = xhr.responseText;
-      }
+      xhr.response = xhr.responseText = JSON.stringify(value);
     }
-
-    delete window[xhr.apiPrefetchOptions.variable];
   }
 
 })(XMLHttpRequest);

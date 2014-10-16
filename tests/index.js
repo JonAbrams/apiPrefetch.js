@@ -1,10 +1,7 @@
 describe('prefetchAPI', function () {
-  describe('prefetchData loaded', function () {
+  describe('single prefetchData loaded', function () {
     beforeEach(function () {
-      window.apiPrefetchData = { loaded: true };
-    });
-    afterEach(function () {
-      delete window.apiPrefetchData;
+      window.apiPrefetchData = JSON.stringify({ loaded: true });
     });
 
     describe('raw XHR', function () {
@@ -63,6 +60,26 @@ describe('prefetchAPI', function () {
       it('hits the real API the second time');
 
       it('hits the real API the first time with a post call');
+    });
+  });
+
+  describe('single prefetchData loaded', function () {
+    beforeEach(function () {
+      window.apiPrefetchData = {
+        '/api/test': { data: 'abc' },
+        '/api/test2': JSON.stringify({ data: 123 })
+      };
+    });
+
+    it('loads both', function () {
+      return $.getJSON('/api/test')
+      .done(function (res) {
+        res.should.eql({ data: 'abc' });
+        return $.getJSON('/api/test2')
+        .done(function (res) {
+          res.should.eql({ data: 123 });
+        });
+      });
     });
   });
 });
