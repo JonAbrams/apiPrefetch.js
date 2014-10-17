@@ -46,9 +46,18 @@
       (typeof prefetchVar === 'string' || prefetchVar[url]);
 
     if (!self.apiPrefetchExecuting) {
-      self.getAllResponseHeaders = self.xhr.getAllResponseHeaders.bind(self.xhr);
-      self.getResponseHeader = self.xhr.getResponseHeader.bind(self.xhr);
-      self.setRequestHeader = self.xhr.setRequestHeader.bind(self.xhr);
+      ['getAllResponseHeaders', 'getResponseHeader', 'setRequestHeader']
+      .forEach(function (prop) {
+        self[prop] = self.xhr[prop].bind(self.xhr);
+      });
+      ['response', 'responseText', 'status', 'statusText']
+      .forEach(function (prop) {
+        Object.defineProperty(self, prop, {
+          get: function () {
+            return self.xhr[prop];
+          }
+        });
+      });
       self.xhr.open.apply(self.xhr, arguments);
     } else if (typeof prefetchVar === 'string') {
       assignResponse(self, prefetchVar);
