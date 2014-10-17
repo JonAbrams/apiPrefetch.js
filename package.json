@@ -1,5 +1,5 @@
 {
-  "name": "apiPrefetch.js",
+  "name": "apiprefetch",
   "version": "0.5.0",
   "main": "prefetchAPI.js",
   "devDependencies": {
