@@ -29,7 +29,12 @@
     });
   };
 
-
+  if (!browserCompatible()) {
+    return console.log([
+      "Your browser is too old to benefit from API prefetching, ",
+      "consider upgrading."
+    ].join(""));
+  }
   window.XMLHttpRequest = phonyXHR;
 
   phonyXHR.prototype.apiPrefetchOptions = XHR.prototype.apiPrefetchOptions || {
@@ -98,4 +103,7 @@
     }
   }
 
+  function browserCompatible () {
+    return typeof Array.prototype.forEach === 'function';
+  }
 })(XMLHttpRequest);
