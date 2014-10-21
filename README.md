@@ -2,9 +2,7 @@
 
 A library for the browser that automatically skips the initial API call that JS makes if the data is already available.
 
-It overrides the browser's default XMLHttpRequest constructor, so it should work with any framework, including jQuery, AngularJS, EmberJS, BackboneJS, etc.
-
-This library works really well with the NodeJS back-end framework [Synth](https://www.synthjs.com/).
+It monkey-patches the browser's default XMLHttpRequest constructor, so it should "just work" with any framework, including: jQuery, AngularJS, EmberJS, BackboneJS, etc.
 
 [![Build Status](https://travis-ci.org/JonAbrams/apiPrefetch.js.svg?branch=master)](https://travis-ci.org/JonAbrams/apiPrefetch.js)
 
@@ -22,11 +20,11 @@ Load apiPrefetch.js before you load any other JS code, especially any that would
 
 Configure your server to preload the results of an initial API get request into a global object called **apiPrefetchData** with the keys equal to the endpoint path.
 
-The value for each key should be a rendered JSON object (not a string), but be sure to escape forward slashes (see security note below).
+The value for each key should be a rendered/parsed JSON object (or a string if it's not JSON), but be sure to escape forward slashes (see security note below).
 
 Voila, now when you go to make the initial API request, if the data's already there, it's returned without needing to make another round-trip to the server.
 
-After the initial API request, all future requests will actually go out and hit your API as usual, even if the same url is requested.
+After the initial API request, all future requests to the same url path will actually go out and hit your API as usual.
 
 
 #### Example
@@ -81,7 +79,7 @@ If you plan to use the browser's raw XMLHttpRequest class, be aware of the follo
 
 - In order for the library to work its magic, the xhr object it generates currently only has **open** and **send** methods.
 - Callbacks should be assigned to the xhr's onload property. Support for **addEventListener** and **onreadystatechange** isn't available yet, and likely won't be needed.
-- It does work with **responseType**, but only JSON. If you set `xhr.responseType` to `"json"`, then `xhr.response` will be an object, not a JSON string.
+- It does work with **responseType**, but only JSON. If you set `xhr.responseType` to `"json"`, then `xhr.response` will be a parsed JSON object, not a JSON string.
 
 ## FAQ
 
