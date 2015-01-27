@@ -1,5 +1,7 @@
 # PrefetchAPI.js
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/JonAbrams/apiPrefetch.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A library for the browser that automatically skips the initial API call that JS makes if the data is already available.
 
 It monkey-patches the browser's default XMLHttpRequest constructor, so it should "just work" with any framework, including: jQuery, AngularJS, EmberJS, BackboneJS, etc.
